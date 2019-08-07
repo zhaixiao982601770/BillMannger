@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vpi.dao.UserDao">
+
+   <sql id="userAll">
+      id,username,real_name,password,gender,birthday,user_type
+   </sql>
+
+   <!--检查用户登录 -->
+   <select id="goUserLogin" parameterType="com.vpi.model.User" resultType="com.vpi.model.User">
+      select <include refid="userAll"/> from user where username=#{username} and password=#{password}
+   </select>
+
+<!--查所有的用户 -->
+   <select id="findAll" resultType="com.vpi.model.User">
+        select <include refid="userAll"/> from user
+   </select>
+
+   <!--添加 用户-->
+   <insert id="addUser" parameterType="com.vpi.model.User">
+      INSERT INTO user VALUES (null,#{username}, #{real_name},#{password},#{gender},#{birthday},#{user_type})
+   </insert>
+
+   <!-- 删除用户-->
+   <delete id="deleteUser" parameterType="com.vpi.model.User">
+      delete from user where id=#{id}
+   </delete>
+
+   <!--显示用户(根据id)-->
+   <select id="showUser"  parameterType="com.vpi.model.User" resultType="com.vpi.model.User">
+        select <include refid="userAll"/> from user where id=#{id}
+   </select>
+
+   <!-- 修改用户信息-->
+   <update id="updateUser" parameterType="com.vpi.model.User" >
+      update user set real_name=#{real_name},gender=#{gender},birthday=#{birthday},user_type=#{user_type} where id=#{id}
+   </update>
+
+   <!-- 根据条件查询信息-->
+   <select id="findUserByParam"  parameterType="com.vpi.model.User" resultType="com.vpi.model.User">
+      select <include refid="userAll"/> from user
+      <where><!-- 自动忽略遇到的第一个前置and-->
+         <if test="username!=null and username!=''">
+            and username like "%${username}%"
+         </if>
+         <if test="gender!=null and gender>0">
+            and gender=#{gender}
+         </if>
+      </where>
+
+   </select>
+</mapper>
